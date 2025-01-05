@@ -17,6 +17,13 @@ With Model-Driven Development (MDD), domain experts can focus on refining their 
 2. Download the binaries for your operating system from the Releases section.
 
 3. Unpack the binaries into the corresponding subfolder within the `bin` folder.
+   
+**Note:** On some Windows systems, the Model Solver may not work due to missing C++ runtime dependencies. 
+
+To resolve this issue, you need to install the Microsoft Visual Studio C++ Runtime Package for 64-bit systems. It can be downloaded from the following links:
+- [Direct download link](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+- [Microsoft documentation](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
+
 
 
 ## Usage:
