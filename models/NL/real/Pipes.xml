@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Model type="NR" domain="real" eps="1e-9" name="Water pipe system">
+	<Vars out="true">
+		<Var name="p2" val="p1-10000"/>  <!-- Initial value for pressure on the second node -->
+		<Var name="p3" val="p1-20000"/>  <!-- Initial value for pressure on the third node -->
+		<Var name="Q12" val="0"/> 	<!-- Flow from node 1 to node 2 (calculated in postprocessing) -->
+		<Var name="Q23" val="0"/> 	<!-- Flow from node 2 to node 3 (calculated in postprocessing) -->
+	</Vars>
+	<Params>
+		<Param name="p1" val="500000" out="true"/> 	<!-- Known presure at node 1 -->
+		<Param name="D" val="100/1000"/> 	<!-- Pipe diameter in mm-->
+		<Param name="L" val="1000"/> 	<!-- Pipe lengtth -->
+		<Param name="f" val="0.02"/> 	<!-- Pipe friction -->
+		<Param name="rho" val="1000"/> 	<!-- Fluid density -->
+		<Param name="C" val="sqrt((pi^2*D^5)/(8*f*rho*L))"/> <!-- The conductance coefficient -->
+		<Param name="Q2" val="2/1000"/> 	<!-- Flow injected at node 2 in l/s -->
+		<Param name="Q3" val="-10/1000"/> 	<!-- Flow injected at node 3 in /s -->
+	</Params>
+	<NLEqs>
+		<Eq fx="Q12=sign(p1-p2)*C*sqrt(abs(p1-p2))"/>
+		<Eq fx="Q23=sign(p2-p3)*C*sqrt(abs(p2-p3))"/>
+		<Eq fx="Q12+Q2-Q23=0"/> <!-- Flow conservation at node 2 -->
+		<Eq fx="Q23+Q3=0"/> <!-- Flow conservation at node 3 -->	
+	</NLEqs>
+</Model>
