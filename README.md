@@ -7,6 +7,18 @@ By utilizing advanced numerical methods like Newton-Raphson solvers with symboli
 
 With Model-Driven Development (MDD), domain experts can focus on refining their models, while the tool handles the complexities of code generation, including loops, conditions, and pointer management. The Model Solver is implemented in C++, supports large-scale systems with sparse matrices, and leverages SIMD on Windows, Linux, and macOS (including Intel and Apple Silicon).
 
+## Install
+
+1. Download the repository from the main branch:
+   - The `bin` folder is reserved for binaries and needs to be populated with the appropriate release files depending on your operating system.
+   - The `models` folder contains example models in XML format.
+   - The `plotSol.py` script can be used to plot results for DAE and ODE simulations.
+
+2. Download the binaries for your operating system from the Releases section.
+
+3. Unpack the binaries into the corresponding subfolder within the `bin` folder.
+
+
 ## Usage:
 
 ```bash
