@@ -53,5 +53,6 @@ This would generate the following image:
 
 ###Note: plotSol.py requires Python packages 'numpy' and 'matplotlib'. These two packages can be installed usin pip:
 ```bash
-'''pip3 install numpy
+pip3 install numpy
 pip3 install matplotlib
+```
