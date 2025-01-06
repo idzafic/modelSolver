@@ -14,7 +14,7 @@ With Model-Driven Development (MDD), domain experts can focus on refining their 
    - The `models` folder contains example models in XML format.
    - The `plotSol.py` script can be used to plot results for DAE and ODE simulations.
 
-2. Download the binaries for your operating system from the Releases section.
+2. Download the binaries for your operating system from the [Releases](https://github.com/idzafic/modelSolver/releases) section.
 
 3. Unpack the binaries into the corresponding subfolder within the `bin` folder.
    
