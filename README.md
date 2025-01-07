@@ -70,7 +70,7 @@ This would generate the following image:
 
 ![plot](https://github.com/user-attachments/assets/4d306138-986a-4cae-9f32-2d9fab9d32cc)
 
-###Note: plotSol.py requires Python packages 'numpy' and 'matplotlib'. These two packages can be installed usin pip:
+### Note: plotSol.py requires Python packages 'numpy' and 'matplotlib'. These two packages can be installed usin pip:
 ```bash
 pip3 install numpy
 pip3 install matplotlib
