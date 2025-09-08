@@ -1,11 +1,15 @@
 
 # Model Solver Framework
 
+
+
 The Model Solver is a powerful tool designed to make it easier for domain experts to create and deploy Digital Twins without needing extensive software development knowledge. It allows users to define complex models using human-readable mathematical formulations, and then automatically generates all necessary components for application deployment. This tool is versatile and can handle any system described mathematically, producing customized data structures for AI, ML, and DL applications.
 
 By utilizing advanced numerical methods like Newton-Raphson solvers with symbolic differentiation, the framework ensures high precision and stability in simulations. It also includes an implicit solver based on Butcher’s tables for solving differential-algebraic equations (DAEs), providing excellent stability and accuracy. The framework supports various modeling approaches, including nonlinear state-space and transfer function models, making it ideal for dynamic systems in fields like automation and control.
 
 With Model-Driven Development (MDD), domain experts can focus on refining their models, while the tool handles the complexities of code generation, including loops, conditions, and pointer management. The Model Solver is implemented in C++, supports large-scale systems with sparse matrices, and leverages SIMD on Windows, Linux, and macOS (including Intel and Apple Silicon).
+
+Note: Version 2.0 introduces new modeling paradigm. XML modeling is available in previous versions. See [Releases](https://github.com/idzafic/modelSolver/releases) section.
 
 ## Install
 
@@ -26,7 +30,22 @@ To resolve this issue, you need to install the Microsoft Visual Studio C++ Runti
 
 
 
-## Usage:
+## Usage 
+
+###(XML models - ver 2.x.x and above):
+
+```bash
+modelSolver modelType inputFileName
+```
+where:
+- `inputFileName`: is the input file name in XML format.
+
+All model details must be specified in the header. Txt output (results) will be generated in the same folder with inputFileName and will txt extension.
+
+New model details can be found [here] (https://www.arxiv.org/abs/2508.17882) with all examples provided in foler models/PaperExamples. It includes MATPOWER to dmodl conversion for Power Flow and State Estimation.
+
+
+###(XML models - ver 1.x.x):
 
 ```bash
 modelSolver modelType domain inputFileName outputFileName [t0] [dT] [t1]
