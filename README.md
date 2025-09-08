@@ -42,7 +42,7 @@ where:
 
 All model details must be specified in the header. Txt output (results) will be generated in the same folder with inputFileName and will txt extension.
 
-New model details can be found [here] (https://www.arxiv.org/abs/2508.17882) with all examples provided in foler models/PaperExamples. It includes MATPOWER to dmodl conversion for Power Flow and State Estimation.
+New model details can be found [here] (https://www.arxiv.org/abs/2508.17882) with all examples provided in foler models/PowerSystem/PaperExamples. It includes MATPOWER to dmodl conversion for Power Flow and State Estimation.
 
 
 B) (XML models - ver 1.x.x):
