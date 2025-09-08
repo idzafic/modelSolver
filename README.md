@@ -78,7 +78,7 @@ where:
 Replace 'PATH_TO_ModelSolver' with your Model Solver repository location and 'PATH_TO_OUTPUT_FOLDER' with your desired output directory: Then:
 
 ```bash
-PATH_TO_ModelSolver/bin/windows/amd64/modelSolver DAE real PATH_TO_ModelSolver/models/DAE/ACGenWith1LoadMechLimitAndInitialProblem.xml PATH_TO_OUTPUT_FOLDER/ACGen1.txt 0 0.01 20
+PATH_TO_ModelSolver/bin/modelSolver DAE real PATH_TO_ModelSolver/models/DAE/ACGenWith1LoadMechLimitAndInitialProblem.xml PATH_TO_OUTPUT_FOLDER/ACGen1.txt 0 0.01 20
 ```
 This command generates results in ACGen1.txt within your specified output folder.
 To visualize the results, use the provided plotting script:
