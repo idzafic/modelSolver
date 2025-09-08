@@ -1,0 +1,24 @@
+Header:
+	maxIter=50
+	report=AllDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllWithDetails - All + debug information 
+end  //end of header
+//This model demonstrates the use of unicode in variable/parameter names
+
+Model [type = NL, name = "NL wih Fn", domain=real, eps=1e-6, method=NR]:
+
+	Vars [out = true]:
+		x = 1	
+		y = 1	
+
+	Params: 	
+		k = 2
+		n = 0.5
+
+	NLEs:
+		x^x+ln(y)=k*x+n+y*-0.2		
+		x^2+y^2=4+0.5*x
+
+	PostProc:
+
+end			//end of Model
+        

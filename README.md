@@ -32,10 +32,10 @@ To resolve this issue, you need to install the Microsoft Visual Studio C++ Runti
 
 ## Usage 
 
-###(XML models - ver 2.x.x and above):
+A) (XML models - ver 2.x.x and above):
 
 ```bash
-modelSolver modelType inputFileName
+modelSolver inputFileName
 ```
 where:
 - `inputFileName`: is the input file name in XML format.
@@ -45,7 +45,7 @@ All model details must be specified in the header. Txt output (results) will be 
 New model details can be found [here] (https://www.arxiv.org/abs/2508.17882) with all examples provided in foler models/PaperExamples. It includes MATPOWER to dmodl conversion for Power Flow and State Estimation.
 
 
-###(XML models - ver 1.x.x):
+B) (XML models - ver 1.x.x):
 
 ```bash
 modelSolver modelType domain inputFileName outputFileName [t0] [dT] [t1]

@@ -1,0 +1,19 @@
+Header:
+end  //end of header
+//Show some plots
+Model [name="Iterations"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	//plot obtained precision per iteration
+	linePlot [xLabel="Iterations" yLabel="δ_3" name="Angle at node 3"]:
+		@x << totIter#
+		@y << δ_3 [width=2 name="δ_3"]
+		@cond -> repeat# == 0
+	end
+	linePlot [xLabel="S3 [p.u]" yLabel="v_2,v_3,cGen2Reg" name="Voltage&RegIndicator"]:
+		@x << totIter#
+		@y << v_2 [width=2 colorL=black colorD=cyan name="v2"]
+		@y << v_3 [width=2 colorL=darkRed colorD=red name="v3"]
+		@y << cGen2Reg [width=2 colorL=olive colorD=green name="PV reg on node 2"]
+		@cond -> repeat# == 0
+	end
+end //end of visual model

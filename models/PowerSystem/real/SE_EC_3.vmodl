@@ -1,0 +1,12 @@
+Header:
+end  //end of header
+//Show some plots
+Model [name="Iterations"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	//plot obtained precision per iteration
+	linePlot [maxY=2 xLabel="Iterations" yLabel="Log(eps)" name="Precision"]:
+		@x << totIter#
+		@y << log(obtEps# + 1e-20) [colorL=darkGreen colorD=yellow width=2 pattern=solid name="eps"]
+		@cond -> repeat# == 0
+	end
+end //end of visual model

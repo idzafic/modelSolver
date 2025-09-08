@@ -1,0 +1,32 @@
+Header:
+	startTime = 0.0
+	dTime = 0.001
+	endTime = 5.0
+	maxIter= 20
+	report = Solved
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=DAE domain=real method=Trapezoidal name="PendulumModelUsingDAE"]:
+Vars [out=true]:
+	x=0.6		// Variable name and initial value (optional) 
+	v_x=0		// Variable name and initial value (optional) 
+	y=sqrt(l^2-x^2)		// "0.998749218"  Variable name and initial value (optional) 
+	v_y=0		// Variable name and initial value (optional) 
+	F=m*g*y/l		// "9.6" Variable name and initial value (optional) 
+Params:		// default integration step 
+	l=1		// Parameter name and its value 
+	m=1		// Parameter name and its value 
+	g=9.81		// Parameter name and its value 
+	k=0		// koeficijent otpora zraka 
+	v [out=true]
+TFs:
+	x/v_x=1/s		// First Transfer Function (speed along x-axis)
+	y/v_y=1/s		// Second Transfer Function  (speed along y-axis)
+ODEs:
+	v_x'=-F*x/(m*l)-k*v_x/m		// Third state variable
+	v_y'=g-F*y/(m*l)-k*v_y/m		// 4th state variable
+NLEs:
+	x^2+y^2=l^2		// First nonlinear equation of the model 
+PostProc:
+	v= v_x^2 + v_y^2
+end

@@ -1,0 +1,14 @@
+Header:
+end  //end of header
+//Show some plots
+Model:
+Plots:
+	//plot thet and omega
+	linePlot [xLabel="Time [s]" yLabel="theta,omega" name="PendulumODE"]:
+		@x << t
+		@y << theta [colorL=black colorD=red width=2 name="theta"]
+		@y << omega [colorL=darkGreen colorD=green width=2 name="omega"]
+		@cond -> repeat# == 0
+	end
+		
+end //end of visual model

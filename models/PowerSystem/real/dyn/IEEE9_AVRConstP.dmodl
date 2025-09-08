@@ -1,0 +1,338 @@
+Header:
+	maxIter = 50 	//Solution start time for time domain (ODE and DAE) problems
+	report = AllDetails 	//Solved and unsolved cases with iterations and debug information
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+	startTime = 0	//Solution start time for time domain (ODE and DAE) problems
+	dTime = 0.001	//Integration time step for time domain (ODE and DAE) problems
+	endTime = 10	//Solution end time step for time domain (ODE and DAE) problems
+end
+Model [type=DAE domain=real name="IEEE9_Bus_Classical_Model" method=RK2 eps=1e-8]:
+
+Vars [out=true]:
+	δ_g2 = 0
+	ω_g2 = ω_ref
+	Eq_p_g2 = 1.0
+	Efd_g2 = 1.0
+	Vm_g2 = 1.0
+	P_gm_g2 = 1.63
+	
+	δ_g3 = 0
+	ω_g3 = ω_ref
+  Eq_p_g3 = 1.0
+  Efd_g3 = 1.0
+  Vm_g3 = 1.0
+  P_gm_g3 = 0.85
+	
+	// --- Algebarske promenljive ---
+	vr2 = V_reg2*cos(δ_g2); vi2 = V_reg2*sin(δ_g2)
+	vr3 = V_reg3*cos(δ_g3); vi3 = V_reg3*sin(δ_g3)
+	vr4 = 1.0;   vi4 = 0
+	vr5 = 1.0;   vi5 = 0
+	vr6 = 1.0;   vi6 = 0
+	vr7 = 1.0;   vi7 = 0
+	vr8 = 1.0;   vi8 = 0
+	vr9 = 1.0;   vi9 = 0
+
+
+	// --- Pomoćne algebarske promenljive ---
+	Pe_g2
+	V_t_g2
+	Eq_prime_r_g2
+	Eq_prime_i_g2
+	I_gen_r2
+	I_gen_i2
+	Id_g2; Iq_g2
+	
+	Pe_g3
+	V_t_g3
+	Eq_prime_r_g3
+	Eq_prime_i_g3
+	I_gen_r3
+	I_gen_i3
+	Id_g3; Iq_g3
+	
+Params:
+	P1_gen [out=true]; Q1_gen [out=true]
+	f_base = 50
+	ω_base = 2*pi*f_base
+	ω_ref = 1
+	
+	r45=0.01;	  x45=0.085;  bsh45=0.176
+	r46=0.017;  x46=0.092;  bsh46=0.158
+	r57=0.032;  x57=0.161;  bsh57=0.306
+	r69=0.039;  x69=0.170;  bsh69=0.358
+	r78=0.0085; x78=0.072;  bsh78=0.149
+	r89=0.0119; x89=0.1008; bsh89=0.209
+	r14=0;      x14=0.0576; bsh14=0
+	r27=0;      x27=0.0625; bsh27=0
+	r39=0;      x39=0.0586; bsh39=0
+	
+	g14_calc = r14/(r14^2+x14^2); b14_calc = -x14/(r14^2+x14^2)	
+	g27_calc = r27/(r27^2+x27^2); b27_calc = -x27/(r27^2+x27^2)
+	g39_calc = r39/(r39^2+x39^2); b39_calc = -x39/(r39^2+x39^2)
+	g45_calc = r45/(r45^2+x45^2); b45_calc = -x45/(r45^2+x45^2)
+	g46_calc = r46/(r46^2+x46^2); b46_calc = -x46/(r46^2+x46^2)
+	g57_calc = r57/(r57^2+x57^2); b57_calc = -x57/(r57^2+x57^2)
+	g69_calc = r69/(r69^2+x69^2); b69_calc = -x69/(r69^2+x69^2)
+	g78_calc = r78/(r78^2+x78^2); b78_calc = -x78/(r78^2+x78^2)
+	g89_calc = r89/(r89^2+x89^2); b89_calc = -x89/(r89^2+x89^2)
+	
+	G14=-g14_calc; B14=-b14_calc	
+	G27=-g27_calc; B27=-b27_calc
+	G39=-g39_calc; B39=-b39_calc
+	G45=-g45_calc; B45=-b45_calc
+	G46=-g46_calc; B46=-b46_calc
+	G57=-g57_calc; B57=-b57_calc
+	G69=-g69_calc; B69=-b69_calc
+	G78=-g78_calc; B78=-b78_calc
+	G89=-g89_calc; B89=-b89_calc
+	
+	G11=g14_calc
+	B11=b14_calc+bsh14/2
+	G22=g27_calc
+	B22=b27_calc+bsh27/2
+	G33=g39_calc
+	B33=b39_calc+bsh39/2
+	G44=g14_calc+g45_calc+g46_calc
+	B44=b14_calc+b45_calc+b46_calc+bsh14/2+bsh45/2+bsh46/2
+	G55=g45_calc+g57_calc
+	B55=b45_calc+b57_calc+bsh45/2+bsh57/2
+	G66=g46_calc+g69_calc
+	B66=b46_calc+b69_calc+bsh46/2+bsh69/2
+	G77=g27_calc+g57_calc+g78_calc
+	B77=b27_calc+b57_calc+b78_calc+bsh27/2+bsh57/2+bsh78/2
+	G88=g78_calc+g89_calc
+	B88=b78_calc+b89_calc+bsh78/2+bsh89/2
+	G99=g39_calc+g69_calc+g89_calc
+	B99=b39_calc+b69_calc+b89_calc+bsh39/2+bsh69/2+bsh89/2
+	
+	P_load5=1.25; Q_load5=0.50 	
+	P_load6=0.90; Q_load6=0.30
+	P_load8=1.00; Q_load8=0.35
+	
+	vr1 = 1.04; vi1 = 0
+	V_reg2=1.025
+	V_reg3=1.025
+	P_gen2_init=1.63
+	P_gen3_init=0.85
+	
+	H_g2=6.4
+	D_g2=28.0
+	Xd_g2=0.8958
+	Xd_p_g2=0.1198
+	Tdo_p_g2=6.0
+	Ka_g2=250.0
+	Ta_g2=0.02
+	Tr_g2=0.02
+	V_ref_g2     // Referentni napon (računa se pri inicijalizaciji)
+	R_g2=0.05
+	T_gov_g2=0.3
+	P_ref_g2     // Referentna snaga (računa se pri inicijalizaciji)
+	
+	H_g3=6.175
+	D_g3=28.0
+	Xd_g3=1.3125
+	Xd_p_g3=0.1813
+	Tdo_p_g3=6.0
+	Ka_g3=200.0
+	Ta_g3=0.02
+	Tr_g3=0.02
+	V_ref_g3     // Referentni napon (računa se pri inicijalizaciji)
+	R_g3=0.07
+	T_gov_g3=0.4
+	P_ref_g3     // Referentna snaga (računa se pri inicijalizaciji)
+
+	Pe_g1 [out=true]
+	
+
+SubModel [type=NL name="Initialization" copyPars=-1 eps=1e-8]:
+	Vars:				//Local (submodel) variables
+		vr2=1.025; vi2=0			
+		vr3=1.025; vi3=0
+		vr4=1.0;   vi4=0
+		vr5=1.0;   vi5=0
+		vr6=1.0;   vi6=0
+		vr7=1.0;   vi7=0
+		vr8=1.0;   vi8=0
+		vr9=1.0;   vi9=0
+	Params:		//Local (submodel) params
+		Pe_init
+		Qe_init
+		Vt_init
+		Id_init
+		Ir_init
+		Ii_init
+		Eq2_r_init
+		Eq2_i_init
+		E2_mag_init
+		Eq3_r_init
+		Eq3_i_init
+		E3_mag_init
+	NLEs:
+		// Jednačine tokova snaga za proračun početnog stanja
+		vr2*(G22*vr2-B22*vi2)+vi2*(G22*vi2+B22*vr2)+vr2*(G27*vr7-B27*vi7)+vi2*(G27*vi7+B27*vr7)=P_gen2_init
+		vr2^2+vi2^2=V_reg2^2;
+		vr3*(G33*vr3-B33*vi3)+vi3*(G33*vi3+B33*vr3)+vr3*(G39*vr9-B39*vi9)+vi3*(G39*vi9+B39*vr9)=P_gen3_init
+		vr3^2+vi3^2=V_reg3^2
+		vr4*(G14*vr1-B14*vi1)+vi4*(G14*vi1+B14*vr1)+vr4*(G44*vr4-B44*vi4)+vi4*(G44*vi4+B44*vr4)+vr4*(G45*vr5-B45*vi5)+vi4*(G45*vi5+B45*vr5)+vr4*(G46*vr6-B46*vi6)+vi4*(G46*vi6+B46*vr6)=0
+		vi4*(G14*vr1-B14*vi1)-vr4*(G14*vi1+B14*vr1)+vi4*(G44*vr4-B44*vi4)-vr4*(G44*vi4+B44*vr4)+vi4*(G45*vr5-B45*vi5)-vr4*(G45*vi5+B45*vr5)+vi4*(G46*vr6-B46*vi6)-vr4*(G46*vi6+B46*vr6)=0
+		vr5*(G45*vr4-B45*vi4)+vi5*(G45*vi4+B45*vr4)+vr5*(G55*vr5-B55*vi5)+vi5*(G55*vi5+B55*vr5)+vr5*(G57*vr7-B57*vi7)+vi5*(G57*vi7+B57*vr7)=-P_load5
+		vi5*(G45*vr4-B45*vi4)-vr5*(G45*vi4+B45*vr4)+vi5*(G55*vr5-B55*vi5)-vr5*(G55*vi5+B55*vr5)+vi5*(G57*vr7-B57*vi7)-vr5*(G57*vi7+B57*vr7)=-Q_load5
+		vr6*(G46*vr4-B46*vi4)+vi6*(G46*vi4+B46*vr4)+vr6*(G66*vr6-B66*vi6)+vi6*(G66*vi6+B66*vr6)+vr6*(G69*vr9-B69*vi9)+vi6*(G69*vi9+B69*vr9)=-P_load6
+		vi6*(G46*vr4-B46*vi4)-vr6*(G46*vi4+B46*vr4)+vi6*(G66*vr6-B66*vi6)-vr6*(G66*vi6+B66*vr6)+vi6*(G69*vr9-B69*vi9)-vr6*(G69*vi9+B69*vr9)=-Q_load6
+		vr7*(G27*vr2-B27*vi2)+vi7*(G27*vi2+B27*vr2)+vr7*(G57*vr5-B57*vi5)+vi7*(G57*vi5+B57*vr5)+vr7*(G77*vr7-B77*vi7)+vi7*(G77*vi7+B77*vr7)+vr7*(G78*vr8-B78*vi8)+vi7*(G78*vi8+B78*vr8)=0
+		vi7*(G27*vr2-B27*vi2)-vr7*(G27*vi2+B27*vr2)+vi7*(G57*vr5-B57*vi5)-vr7*(G57*vi5+B57*vr5)+vi7*(G77*vr7-B77*vi7)-vr7*(G77*vi7+B77*vr7)+vi7*(G78*vr8-B78*vi8)-vr7*(G78*vi8+B78*vr8)=0
+		vr8*(G78*vr7-B78*vi7)+vi8*(G78*vi7+B78*vr7)+vr8*(G88*vr8-B88*vi8)+vi8*(G88*vi8+B88*vr8)+vr8*(G89*vr9-B89*vi9)+vi8*(G89*vi9+B89*vr9)=-P_load8
+		vi8*(G78*vr7-B78*vi7)-vr8*(G78*vi7+B78*vr7)+vi8*(G88*vr8-B88*vi8)-vr8*(G88*vi8+B88*vr8)+vi8*(G89*vr9-B89*vi9)-vr8*(G89*vi9+B89*vr9)=-Q_load8
+		vr9*(G39*vr3-B39*vi3)+vi9*(G39*vi3+B39*vr3)+vr9*(G69*vr6-B69*vi6)+vi9*(G69*vi6+B69*vr6)+vr9*(G89*vr8-B89*vi8)+vi9*(G89*vi8+B89*vr8)+vr9*(G99*vr9-B99*vi9)+vi9*(G99*vi9+B99*vr9)=0
+		vi9*(G39*vr3-B39*vi3)-vr9*(G39*vi3+B39*vr3)+vi9*(G69*vr6-B69*vi6)-vr9*(G69*vi6+B69*vr6)+vi9*(G89*vr8-B89*vi8)-vr9*(G89*vi8+B89*vr8)+vi9*(G99*vr9-B99*vi9)-vr9*(G99*vi9+B99*vr9)=0
+		
+	PostProc:
+		// --- Inicijalizacija za G2 (klasični model) ---
+		Pe_init = P_gen2_init
+		Qe_init = vi2*(G22*vr2-B22*vi2)-vr2*(G22*vi2+B22*vr2)+vi2*(G27*vr7-B27*vi7)-vr2*(G27*vi7+B27*vr7)
+		Vt_init = sqrt(vr2^2 + vi2^2)
+		Ir_init = (vr2*Pe_init + vi2*Qe_init)/(Vt_init^2)
+		Ii_init = (vi2*Pe_init - vr2*Qe_init)/(Vt_init^2)
+		Eq2_r_init = vr2 - Xd_p_g2*Ii_init
+		Eq2_i_init = vi2 + Xd_p_g2*Ir_init
+		E2_mag_init = sqrt(Eq2_r_init^2 + Eq2_i_init^2)
+		
+		@main.δ_g2 = atg2(Eq2_r_init, Eq2_i_init)
+		@main.Pe_g2 = P_gen2_init; 
+		// Inicijalizacija dinamičkih stanja
+		@main.Eq_p_g2 = E2_mag_init
+				
+		// Proračun i inicijalizacija konstantnih parametara P_m i Efd
+		Id_init = Ir_init*sin(@main.δ_g2) - Ii_init*cos(@main.δ_g2)
+		@main.P_gm_g2 = P_gen2_init
+		@main.Efd_g2 = E2_mag_init + (Xd_g2 - Xd_p_g2)*Id_init
+		@main.P_ref_g2 = Pe_init        
+		@main.Vm_g2 = Vt_init 
+		@main.V_ref_g2 = Vt_init  + @main.Efd_g2 / Ka_g2 
+		
+				
+		// --- Inicijalizacija za G3 (klasični model) ---
+		Pe_init = P_gen3_init
+		Qe_init = vi3*(G33*vr3-B33*vi3)-vr3*(G33*vi3+B33*vr3)+vi3*(G39*vr9-B39*vi9)-vr3*(G39*vi9+B39*vr9)
+		Vt_init = sqrt(vr3^2 + vi3^2)
+		Ir_init = (vr3*Pe_init+vi3*Qe_init)/(Vt_init^2)
+		Ii_init = (vi3*Pe_init-vr3*Qe_init)/(Vt_init^2)
+		Eq3_r_init = vr3 - Xd_p_g3*Ii_init
+		Eq3_i_init = vi3 + Xd_p_g3*Ir_init
+		E3_mag_init = sqrt(Eq3_r_init^2 + Eq3_i_init^2)
+				
+		@main.δ_g3 = atg2(Eq3_r_init, Eq3_i_init);
+										
+		// Inicijalizacija dinamičkih stanja
+		@main.Eq_p_g3 = E3_mag_init
+		@main.Pe_g3 = P_gen3_init		
+		@main.P_ref_g3 = Pe_init
+		@main.Vm_g3 = Vt_init				
+		// Proračun i inicijalizacija konstantnih parametara P_m i Efd
+		Id_init = Ir_init*sin(@main.δ_g3) - Ii_init*cos(@main.δ_g3)
+		@main.P_gm_g3 = P_gen3_init
+		@main.Efd_g3 = E3_mag_init + (Xd_g3 - Xd_p_g3)*Id_init
+		@main.V_ref_g3 = Vt_init + @main.Efd_g3 / Ka_g3
+										
+		//transfer voltage variables
+		@main.vr2 = vr2; @main.vi2 = vi2
+		@main.vr3 = vr3; @main.vi3 = vi3
+		@main.vr4 = vr4; @main.vi4 = vi4
+		@main.vr5 = vr5; @main.vi5 = vi5
+		@main.vr6 = vr6; @main.vi6 = vi6
+		@main.vr7 = vr7; @main.vi7 = vi7
+		@main.vr8 = vr8; @main.vi8 = vi8
+		@main.vr9 = vr9; @main.vi9 = vi9
+		
+		//transfer other variables and params to match steady state initial conditions
+		@main.ω_g2 = ω_ref; @main.ω_g3 = ω_ref
+		@main.V_t_g2 = sqrt(vr2^2+vi2^2)
+		
+		@main.Eq_prime_r_g2 = E2_mag_init*cos(@main.δ_g2); @main.Eq_prime_i_g2 = E2_mag_init*sin(@main.δ_g2)
+		@main.I_gen_r2 = (E2_mag_init*sin(@main.δ_g2) - vi2)/Xd_p_g2; @main.I_gen_i2 = -(E2_mag_init*cos(@main.δ_g2) - vr2)/Xd_p_g2
+		
+		@main.Id_g2 = @main.I_gen_r2*sin(@main.δ_g2) - @main.I_gen_i2*cos(@main.δ_g2)
+		@main.Iq_g2 = @main.I_gen_r2*cos(@main.δ_g2) + @main.I_gen_i2*sin(@main.δ_g2)
+		
+		@main.V_t_g3 = sqrt(vr3^2+vi3^2)
+		@main.Eq_prime_r_g3 = E3_mag_init*cos(@main.δ_g3); @main.Eq_prime_i_g3 = E3_mag_init*sin(@main.δ_g3)
+		@main.I_gen_r3 = (E3_mag_init*sin(@main.δ_g3) - vi3)/Xd_p_g3; @main.I_gen_i3 = -(E3_mag_init*cos(@main.δ_g3) - vr3)/Xd_p_g3
+		@main.Id_g3 = @main.I_gen_r3*sin(@main.δ_g3) - @main.I_gen_i3*cos(@main.δ_g3)
+		@main.Iq_g3 = @main.I_gen_r3*cos(@main.δ_g3) + @main.I_gen_i3*sin(@main.δ_g3)
+	end
+
+ODEs:
+	//Jednačine za dinamiku preuzete iz knjige P. Sauer & M.A. Pai ("Power System Dynamics and Stability") 
+	// -- Diferencijalne jednačine za G2 (klasični model) --
+	
+	δ_g2'  = (ω_g2 - ω_ref) * ω_base                                                   //Kretanje rotora generatora, str. 249 (8.109)
+	ω_g2'  = (1/(2*H_g2)) * (P_gm_g2 - Pe_g2 - D_g2*(ω_g2 - ω_ref))                      //Jednačina njihanja (Swing Equation), str. 104 (5.155)
+	Eq_p_g2' = (1/Tdo_p_g2) * (Efd_g2 - (Eq_p_g2 + (Xd_g2 - Xd_p_g2)*Id_g2))          //Promjena tranzijentnog napona iza tranzijentne reaktanse (Eq_p_g2), str. 50 (3.217)
+	P_gm_g2' = (1/T_gov_g2) * (P_ref_g2 - (1/R_g2)*(ω_g2 - ω_ref) - P_gm_g2)          //Regulator brzine, str. 85 (4.116)
+	Efd_g2'  = (1/Ta_g2) * (Ka_g2 * (V_ref_g2 - Vm_g2) - Efd_g2)                   // Automatski regulator napona (AVR), str. 255 (8.139)
+	Vm_g2'   = (1/Tr_g2) * (V_t_g2 - Vm_g2)                                        // Senzor napona, str. 76 (poznata aproksimacija)
+	  
+	// -- Diferencijalne jednačine za G3 (klasični model) --
+	δ_g3'  = (ω_g3 - ω_ref) * ω_base                                                    //Kretanje rotora generatora, str. 249 (8.109)
+	ω_g3'  = (1/(2*H_g3)) * (P_gm_g3 - Pe_g3 - D_g3*(ω_g3 - ω_ref))                      //Jednačina njihanja (Swing Equation), str. 249 (8.108)
+	Eq_p_g3' = (1/Tdo_p_g3) * (Efd_g3 - (Eq_p_g3 + (Xd_g3 - Xd_p_g3)*Id_g3))          //Promjena tranzijentnog napona iza tranzijentne reaktanse (Eq_p_g3), str. 50 (3.217)
+	P_gm_g3' = (1/T_gov_g3) * (P_ref_g3 - (1/R_g3)*(ω_g3 - ω_ref) - P_gm_g3)          //Regulator brzine, str. 85 (4.116)
+	Efd_g3'  = (1/Ta_g3) * (Ka_g3 * (V_ref_g3 - Vm_g3) - Efd_g3)                     // Automatski regulator napona (AVR), str. 255 (8.139)
+	Vm_g3'   = (1/Tr_g3) * (V_t_g3 - Vm_g3)                                          // Senzor napona, str. 76 (poznata aproksimacija)
+	
+NLEs:
+	Eq_prime_r_g2 = Eq_p_g2*cos(δ_g2); Eq_prime_i_g2 = Eq_p_g2*sin(δ_g2)
+	I_gen_r2 = (Eq_prime_i_g2 - vi2)/Xd_p_g2; I_gen_i2 = -(Eq_prime_r_g2 - vr2)/Xd_p_g2
+	Pe_g2 = vr2*I_gen_r2 + vi2*I_gen_i2
+	V_t_g2 = sqrt(vr2^2 + vi2^2)
+	Id_g2 = I_gen_r2*sin(δ_g2) - I_gen_i2*cos(δ_g2)
+	Iq_g2 = I_gen_r2*cos(δ_g2) + I_gen_i2*sin(δ_g2)
+	
+	// --- Pomoćne algebarske jednačine za G3 ---
+	Eq_prime_r_g3 = Eq_p_g3*cos(δ_g3); Eq_prime_i_g3 = Eq_p_g3*sin(δ_g3)
+	I_gen_r3 = (Eq_prime_i_g3 - vi3)/Xd_p_g3; I_gen_i3 = -(Eq_prime_r_g3 - vr3)/Xd_p_g3
+	Pe_g3 = vr3*I_gen_r3 + vi3*I_gen_i3
+	V_t_g3 = sqrt(vr3^2 + vi3^2)
+	Id_g3 = I_gen_r3*sin(δ_g3) - I_gen_i3*cos(δ_g3)
+	Iq_g3 = I_gen_r3*cos(δ_g3) + I_gen_i3*sin(δ_g3)
+	
+	(G22*vr2-B22*vi2)+(G27*vr7-B27*vi7)-I_gen_r2=0
+	(B22*vr2+G22*vi2)+(B27*vr7+G27*vi7)-I_gen_i2=0
+	(G33*vr3-B33*vi3)+(G39*vr9-B39*vi9)-I_gen_r3=0
+	(B33*vr3+G33*vi3)+(B39*vr9+G39*vi9)-I_gen_i3=0
+	
+	// -- Ostale mrežne jednačine (PQ sabirnice) --
+	vr4*(G14*vr1-B14*vi1)+vi4*(G14*vi1+B14*vr1)+vr4*(G44*vr4-B44*vi4)+vi4*(G44*vi4+B44*vr4)+vr4*(G45*vr5-B45*vi5)+vi4*(G45*vi5+B45*vr5)+vr4*(G46*vr6-B46*vi6)+vi4*(G46*vi6+B46*vr6)=0
+	vi4*(G14*vr1-B14*vi1)-vr4*(G14*vi1+B14*vr1)+vi4*(G44*vr4-B44*vi4)-vr4*(G44*vi4+B44*vr4)+vi4*(G45*vr5-B45*vi5)-vr4*(G45*vi5+B45*vr5)+vi4*(G46*vr6-B46*vi6)-vr4*(G46*vi6+B46*vr6)=0
+	
+	vr5*(G45*vr4-B45*vi4)+vi5*(G45*vi4+B45*vr4)+vr5*(G55*vr5-B55*vi5)+vi5*(G55*vi5+B55*vr5)+vr5*(G57*vr7-B57*vi7)+vi5*(G57*vi7+B57*vr7)=-P_load5
+	vi5*(G45*vr4-B45*vi4)-vr5*(G45*vi4+B45*vr4)+vi5*(G55*vr5-B55*vi5)-vr5*(G55*vi5+B55*vr5)+vi5*(G57*vr7-B57*vi7)-vr5*(G57*vi7+B57*vr7)=-Q_load5
+	
+	vr6*(G46*vr4-B46*vi4)+vi6*(G46*vi4+B46*vr4)+vr6*(G66*vr6-B66*vi6)+vi6*(G66*vi6+B66*vr6)+vr6*(G69*vr9-B69*vi9)+vi6*(G69*vi9+B69*vr9)=-P_load6
+	vi6*(G46*vr4-B46*vi4)-vr6*(G46*vi4+B46*vr4)+vi6*(G66*vr6-B66*vi6)-vr6*(G66*vi6+B66*vr6)+vi6*(G69*vr9-B69*vi9)-vr6*(G69*vi9+B69*vr9)=-Q_load6
+	
+	vr7*(G27*vr2-B27*vi2)+vi7*(G27*vi2+B27*vr2)+vr7*(G57*vr5-B57*vi5)+vi7*(G57*vi5+B57*vr5)+vr7*(G77*vr7-B77*vi7)+vi7*(G77*vi7+B77*vr7)+vr7*(G78*vr8-B78*vi8)+vi7*(G78*vi8+B78*vr8)=0
+	vi7*(G27*vr2-B27*vi2)-vr7*(G27*vi2+B27*vr2)+vi7*(G57*vr5-B57*vi5)-vr7*(G57*vi5+B57*vr5)+vi7*(G77*vr7-B77*vi7)-vr7*(G77*vi7+B77*vr7)+vi7*(G78*vr8-B78*vi8)-vr7*(G78*vi8+B78*vr8)=0
+	
+	vr8*(G78*vr7-B78*vi7)+vi8*(G78*vi7+B78*vr7)+vr8*(G88*vr8-B88*vi8)+vi8*(G88*vi8+B88*vr8)+vr8*(G89*vr9-B89*vi9)+vi8*(G89*vi9+B89*vr9)=-P_load8
+	vi8*(G78*vr7-B78*vi7)-vr8*(G78*vi7+B78*vr7)+vi8*(G88*vr8-B88*vi8)-vr8*(G88*vi8+B88*vr8)+vi8*(G89*vr9-B89*vi9)-vr8*(G89*vi9+B89*vr9)=-Q_load8
+	
+	vr9*(G39*vr3-B39*vi3)+vi9*(G39*vi3+B39*vr3)+vr9*(G69*vr6-B69*vi6)+vi9*(G69*vi6+B69*vr6)+vr9*(G89*vr8-B89*vi8)+vi9*(G89*vi8+B89*vr8)+vr9*(G99*vr9-B99*vi9)+vi9*(G99*vi9+B99*vr9)=0
+	vi9*(G39*vr3-B39*vi3)-vr9*(G39*vi3+B39*vr3)+vi9*(G69*vr6-B69*vi6)-vr9*(G69*vi6+B69*vr6)+vi9*(G89*vr8-B89*vi8)-vr9*(G89*vi8+B89*vr8)+vi9*(G99*vr9-B99*vi9)-vr9*(G99*vi9+B99*vr9)=0
+	
+PostProc:
+	Pe_g1 = vr1*(G14*vr4-B14*vi4)+vi1*(G14*vi4+B14*vr4)
+	if t >= 1:					//disconnect load at node 8 at t= 1s
+		P_load8 = 0
+		Q_load8 = 0
+	end
+	
+end
+	
+	
+
+		
+	

@@ -1,0 +1,46 @@
+Header:
+	maxIter = 60 	//Solution start time for time domain (ODE and DAE) problems
+	report = Solved 	//Only successfully solved cases
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+	startTime = 0	//Solution start time for time domain (ODE and DAE) problems
+	dTime = 0.001	//Integration time step for time domain (ODE and DAE) problems
+	endTime = 20	//Solution end time step for time domain (ODE and DAE) problems
+end
+//Earth-quake model
+Model [type=DAE name="Quake linearized" domain=real method=RK4 eps=1e-5]:
+
+Vars [out=true]:
+	x = 1
+	v = 0.
+	θ = 0.5 
+	ω = 0.
+
+Params:
+	Ω = 2*pi*0.3
+	M=10
+	m=1
+	L=1
+	c_1=2
+	c_2=1
+	k=2
+	F_0=3
+	F_ext = F_0 [out=true]		//Extern force
+	mult = 1/(m*L^2*M)
+	g=9.81
+	
+ // Main problem (ODE)
+ODEs:
+	x' = v
+	v' = mult * (m*L^2*(F_ext-c_1*v-k*x) + m*L*(c_2*ω + m*g*L*θ))
+	θ' = ω
+	ω' = mult * (-m*L*(F_ext-c_1*v-k*x) - (M+m)*(c_2*ω + m*g*L*θ))
+	
+PostProc:
+	if t < 1:			//Limit extern force to be active in first second only
+		F_ext=F_0 * cos(Ω * t)
+	else:
+		F_ext=0
+	end
+end			//end of Model

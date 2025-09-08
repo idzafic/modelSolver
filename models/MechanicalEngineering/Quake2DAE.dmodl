@@ -1,0 +1,67 @@
+Header:
+	maxIter = 60 	//Solution start time for time domain (ODE and DAE) problems
+	report = Solved 	//Only successfully solved cases
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+end
+//Earth-quake model
+Model [type=DAE name="Mechanical system" domain=real method=RK4 eps=1e-5]:
+
+Vars [out=true]:
+	x = 1
+	v = 0
+	θ = 0.5 
+	ω = 0
+	a=0
+	α =0
+
+Params:
+	Ω = 2*pi*0.3
+	M=10
+	m=1
+	L=1
+	c=4
+	k=2
+	F_0=3
+	F_ext = F_0 [out=true]
+	g=9.81
+	μ = 0.3
+	c_f=0.2
+	
+	
+ // Main problem (ODE)
+ODEs:
+	x' = v
+	v' = a
+	θ' = ω
+	ω' = α
+
+NLEs:
+	(M+m)*a + m*L*cos(θ)*α = -m*L*ω^2*sin(θ) + F_ext - k*x - (c+μ+c_f)*v - c_f*L*ω*cos(θ)
+	m*L*cos(θ)*a + m*L^2*α = -m*g*L*sin(θ)-c_f*L*v*cos(θ)-c_f*L^2*ω
+	
+PostProc:
+	if t < 1:			//Limit extern force to be active in first second only
+		F_ext=F_0 * cos(Ω * t)
+	else:
+		F_ext=0
+	end
+end			//end of Model
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

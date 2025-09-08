@@ -1,0 +1,26 @@
+Header:
+	maxIter=50
+	report=AllDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllWithDetails - All + debug information 
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=NL domain=real name="Water pipe system" eps=1e-6]:
+Vars [out=true]:
+	p2=p1-10000		// Initial value for pressure on the second node 
+	p3=p1-20000		// Initial value for pressure on the third node 
+	Q12=0		// Flow from node 1 to node 2 (calculated in postprocessing) 
+	Q23=0		// Flow from node 2 to node 3 (calculated in postprocessing) 
+Params:
+	p1=500*1000 [out=true]		// Known presure at node 1 
+	D=100/1000		// Pipe diameter in mm
+	L=1000		// Pipe lengtth 
+	f=0.02		// Pipe friction 
+	rho=1000		// Fluid density 
+	C=sqrt((pi^2*D^5)/(8*f*rho*L))		// The conductance coefficient 
+	Q2=2/1000		// Flow injected at node 2 in l/s 
+	Q3=-10/1000		// Flow injected at node 3 in /s 
+NLEs:
+	Q12=sign(p1-p2)*C*sqrt(abs(p1-p2))
+	Q23=sign(p2-p3)*C*sqrt(abs(p2-p3))
+	Q12+Q2-Q23=0		// Flow conservation at node 2 
+	Q23+Q3=0		// Flow conservation at node 3 
+end

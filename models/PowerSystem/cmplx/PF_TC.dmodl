@@ -1,0 +1,47 @@
+Header:
+	maxIter=200
+	maxReps=-1
+	report=AllWithDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllWithDetails - All + debug information 
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=NL domain=cmplx reInit=true eps=1e-5 name="PF With Transfer Cap. Test (load on node 3)"]:
+Vars [conj=true out=true]:
+	v1=v1_sl
+	v2=v1
+	v3=v1
+	
+Params:
+	v1_sl=1.01*e^(1i*pi/3)
+	z12=0.005+0.03i; z23=z12
+	y21=1/z12; y23=1/z23
+	y22=y21+y23; y33=y23
+	S2_inj=0.2+0i
+	S3_inj=-0.01-0.001i [out=true]
+	
+NLEs:
+	//node 1 (slack)
+	v1=v1_sl
+	conj(v1)=conj(v1_sl)
+	
+	// node 2 (PQ node)
+	v2*conj(y22*v2-y21*v1-y23*v3)=S2_inj
+	conj(v2)*(y22*v2-y21*v1-y23*v3)=conj(S2_inj)
+	
+	// node 3  (PQ node)
+	v3*conj(y33*v3-y23*v2) = S3_inj
+	conj(v3)*(y33*v3-y23*v2) = conj(S3_inj)
+
+Repeats:
+	if real(S3_inj) < -6.649:
+		if real(S3_inj) < -6.6529:
+			S3_inj -= 0.0001+0.00001i			//close to the PV nose, use smaller steps
+			repeat
+		else:
+			S3_inj -= 0.001+0.0001i			//close to the PV nose, use smaller steps
+			repeat
+		end
+	else:
+		S3_inj -= 0.01+0.001i
+		repeat
+	end
+end

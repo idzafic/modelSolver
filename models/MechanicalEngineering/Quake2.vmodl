@@ -1,0 +1,18 @@
+Header:
+	newTab = false 	//true:Create new tab whenever figure changes, false: update figure in the existing tab
+end
+//Show some plots
+Model [name="Visualization of results"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+		
+	//plot results
+	linePlot [xLabel="Time [s]" yLabel="x,v,θ,ω" name="Quake NonLinear"]:
+		@x << t
+		@y << x [colorL=black colorD=red width=2 name="x"]
+		@y << v [colorL=darkGreen colorD=green width=2 name="v"]
+		@y << θ [colorL=darkBlue colorD=cyan width=2 name="θ"]
+		@y << ω   [colorL=darkRed colorD=magenta pattern=solid width=1 name="ω "]
+		@y << F_ext [colorL=brown colorD=yellow width=1 pattern=dash name="F_ext"]
+		@cond -> repeat# == 0
+ 	end
+end //end of visual model

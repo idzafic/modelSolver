@@ -1,0 +1,37 @@
+Header:
+	maxIter = 500 	//Solution start time for time domain (ODE and DAE) problems
+	report = AllDetails 	//Solved and unsolved cases with iterations and debug information
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+end
+//Model created by xml -> modl converter
+Model [type=NL domain=real name="Water pipe system" eps=1e-6]:
+Vars [out=true]:
+	p2=p1-dP		// Initial value for pressure on the second node 
+	p3=p2-dP		// Initial value for pressure on the third node 
+	Q12=0		// Flow from node 1 to node 2 (calculated in postprocessing) 
+	Q23=0		// Flow from node 2 to node 3 (calculated in postprocessing) 
+Params:
+	dP=0.01
+	p1=5 [out=true]		// Known presure at node 1 (in bars)
+	D=100/1000		// Pipe diameter in mm
+	L=1000		// Pipe lengtth i meters
+	f=0.02		// Pipe friction 
+	rho=1000		// Fluid density 
+	C=sqrt(100000*(pi^2*D^5)/(8*f*rho*L)) [out=true] // The conductance coefficient 
+	Q2=2/1000		// Flow injected at node 2 in l/s 
+	Q3=-5/1000		// Flow injected at node 3 in l/s 
+	eps2= 1e-5
+NLEs:
+	switch:		//flow from node 1 to node 2
+		case abs(p1-p2)<eps2 -> Q12=(p1-p2)*C
+		default -> Q12=(p1-p2)*C/sqrt(abs(p1-p2))
+	end
+	switch:		//flow from node 2 to node 3
+		case abs(p2-p3)<eps2 -> Q23=(p2-p3)*C
+		default -> Q23=(p2-p3)*C/sqrt(abs(p2-p3))
+	end
+	Q12+Q2-Q23=0		// Flow conservation at node 2 
+	Q23+Q3=0		// Flow conservation at node 3 
+end

@@ -1,0 +1,56 @@
+Header:
+	maxIter=50
+	report=AllDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllDetails - All + debug information 
+end  //end of header
+//Simple WLSE NE Demo
+Model [type=WLS domain=real name="AburExposito_"]:
+Vars [out=true]:
+	δ_2=δ_1		// Variable name and its initial value (optional)
+	δ_3=δ_1
+	v_1=1
+	v_2=1
+	v_3=1
+Params:
+	w_inj=1/0.01^2	//weighting for injection meas.
+	w_br=1/0.008^2 //weighting for branch meas.
+	w_v=1/0.004^2 //weighting for voltage meas.
+	δ_1=0		//slack angle
+	g_12=10; b_12=-30
+	g_13=6.8966; b_13=-17.2414
+	g_23=4.1096; b_23=-10.9589
+	P_12=0.888 //branch measurement
+	P_13=1.173 //branch measurement
+	P_2_meas=-0.501 //injection measurement
+	Q_12=0.568 //branch measurement
+	Q_13=0.663 //branch measurement
+	Q_2_meas=-0.286 //injection measurement
+	V_1=1.006	//voltage measurement
+	V_2=0.968 //voltage measurement
+	G_11=g_12+g_13
+	B_11=b_12+b_13
+	G_22=g_12+g_23
+	B_22=b_12+b_23
+	G_33=g_13+g_23
+	B_33=b_13+b_23
+	// PostProc params 
+	P_1 [out=true]; P_2 [out=true]; P_3 [out=true]
+	Q_1 [out=true]; Q_2 [out=true]; Q_3 [out=true]
+	
+WLSEs: //measurement equations with weighting factors (attribute w)
+	[w=w_br]	v_1^2*g_12-v_1*v_2*(g_12*cos(δ_1-δ_2)+b_12*sin(δ_1-δ_2))=P_12
+	[w=w_br]	v_1^2*g_13-v_1*v_3*(g_13*cos(δ_1-δ_3)+b_13*sin(δ_1-δ_3))=P_13
+	[w=w_inj]	v_2^2*G_22-v_2*v_1*(g_12*cos(δ_2-δ_1)+b_12*sin(δ_2-δ_1))-v_2*v_3*(g_23*cos(δ_2-δ_3)+b_23*sin(δ_2-δ_3))=P_2_meas
+	[w=w_br]	-v_1^2*b_12-v_1*v_2*(g_12*sin(δ_1-δ_2)-b_12*cos(δ_1-δ_2))=Q_12
+	[w=w_br]	-v_1^2*b_13-v_1*v_3*(g_13*sin(δ_1-δ_3)-b_13*cos(δ_1-δ_3))=Q_13
+	[w=w_inj]	-v_2^2*B_22-v_2*v_1*(g_12*sin(δ_2-δ_1)-b_12*cos(δ_2-δ_1))-v_2*v_3*(g_23*sin(δ_2-δ_3)-b_23*cos(δ_2-δ_3))=Q_2_meas
+	[w=w_v]	v_1=V_1
+	[w=w_v]	v_2=V_2
+PostProc:
+	// calculate injected powers 
+	P_1 = v_1^2*G_11-v_1*v_2*(g_12*cos(δ_1-δ_2)+b_12*sin(δ_1-δ_2))-v_1*v_3*(g_13*cos(δ_1-δ_3)+b_13*sin(δ_1-δ_3))
+	P_2 = v_2^2*G_22-v_2*v_1*(g_12*cos(δ_2-δ_1)+b_12*sin(δ_2-δ_1))-v_2*v_3*(g_23*cos(δ_2-δ_3)+b_23*sin(δ_2-δ_3))
+	P_3 = v_3^2*G_33-v_3*v_1*(g_13*cos(δ_3-δ_1)+b_13*sin(δ_3-δ_1))-v_3*v_2*(g_23*cos(δ_3-δ_2)+b_23*sin(δ_3-δ_2))
+	Q_1 = -v_1^2*B_11-v_1*v_2*(g_12*sin(δ_1-δ_2)-b_12*cos(δ_1-δ_2))-v_1*v_3*(g_13*sin(δ_1-δ_3)-b_13*cos(δ_1-δ_3))
+	Q_2 = -v_2^2*B_22-v_2*v_1*(g_12*sin(δ_2-δ_1)-b_12*cos(δ_2-δ_1))-v_2*v_3*(g_23*sin(δ_2-δ_3)-b_23*cos(δ_2-δ_3))
+	Q_3 = -v_3^2*B_33-v_3*v_1*(g_13*sin(δ_3-δ_1)-b_13*cos(δ_3-δ_1))-v_3*v_2*(g_23*sin(δ_3-δ_2)-b_23*cos(δ_3-δ_2))
+end

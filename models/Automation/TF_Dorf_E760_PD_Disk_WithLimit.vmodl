@@ -1,0 +1,15 @@
+Header:
+end  //end of header
+//Show some plots
+Model:
+Plots:
+	//plot thet and omega
+	linePlot [xLabel="Time [s]" yLabel="u,y,err" name="DorfE760_DiskWithLimit"]:
+		@x << t
+		@y << err [colorL=black colorD=red width=2 name="err"]
+		@y << u [colorL=darkGreen colorD=green width=2 name="u"]
+		@y << y [colorL=brown colorD=yellow width=2 name="y"]
+		@cond -> repeat# == 0
+	end
+		
+end //end of visual model

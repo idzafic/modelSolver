@@ -1,0 +1,30 @@
+Header:
+	startTime = 0.0
+	dTime = 1e-6
+	endTime = 0.04
+	maxIter= 20
+	report = Solved
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=ODE domain=real name="Serial RLC With Sine Voltage Gen"]:
+Vars [out=true]:
+	u_c=0
+	i_L=0
+Params:
+	t=0
+	f=50
+	omega=2*pi*f
+	phi=pi/4
+	R=5
+	L=0.012
+	C=8e-4
+	u_max=230*sqrt(2)		// phase to ground EU LV 
+	u_g=u_max*sin(omega*t+phi) [out=true]
+	u_L=u_g [out=true]
+ODEs:
+	i_L'=(u_max*sin(omega*t+phi)-u_c-R*i_L)/L
+	u_c'=i_L/C
+PostProc:
+	u_g = u_max*sin(omega*t+phi)
+	u_L = u_g-u_c-R*i_L
+end

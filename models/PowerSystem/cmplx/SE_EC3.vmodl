@@ -1,0 +1,13 @@
+Header:
+end  //end of header
+//Show some plots
+Model [name="Iterations"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	//plot voltages at node 2 and 3, per iteration (x axis is not entered)
+	linePlot [minY=0.8 maxY=1.1 xLabel="iteration" yLabel="V2 & V3 [p.u] and PV reg on node 2 [bool]" name="Voltages per iter"]:
+		@x << totIter
+		@y << abs(v2) [width=2 colorL=black colorD=cyan name="v2"]
+		@y << abs(v3) [width=2 colorL=darkRed colorD=red name="v3"]
+		@cond -> repeat# == 0
+	end
+end //end of visual model

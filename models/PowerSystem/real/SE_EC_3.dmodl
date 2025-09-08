@@ -1,0 +1,49 @@
+Header:
+	maxIter=50
+	report=AllDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllDetails - All + debug information 
+end  //end of header
+//Node 2 is Zero Injection node (ZI)
+Model [type=WLS domain=real name="Three nodes"]:
+Vars [out=true]:
+	v_1=1
+	δ_2=δ_1		// Variable name and its initial value (optional)
+	v_2=1
+	δ_3=δ_1
+	v_3=1
+Params:
+	w_inj=0.1 //w for inj. measurements
+	w_v=0.1	//w for voltage measurements
+	δ_1=0		// Parameter name and its value
+	aY=32.8797974610715
+	aY11=aY
+	aY21=aY
+	aY22=65.7595949221429
+	aY23=aY
+	aY32=aY
+	aY33=aY
+	θ_diag=-1.40564764938027 
+	θ_offDiag=1.73594500420952 
+	θ_11=θ_diag
+	θ_21=θ_offDiag
+	θ_22=θ_diag
+	θ_23=θ_offDiag
+	θ_32=θ_offDiag
+	θ_33=θ_diag
+	P3_inj=-1
+	Q3_inj=-0.3
+	v1_meas=1
+	v2_meas=0.984267
+	v3_meas=0.969386
+WLSEs:
+	// node 3 
+	[w=w_inj]	v_3^2*aY33*cos(θ_33) + v_3*(aY32*v_2*cos(δ_3-θ_32-δ_2)) = P3_inj
+	[w=w_inj]	-v_3^2*aY33*sin(θ_33) + v_3*(aY32*v_2*sin(δ_3-θ_32-δ_2)) = Q3_inj
+	// voltages 
+	[w=w_v]	v_1 = v1_meas
+	[w=w_v]	v_2 = v2_meas
+	[w=w_v]	v_3 = v3_meas
+ECs:
+	// node 2 (ZI)->Sum of currents = 0
+	aY21*v_1*cos(θ_21+δ_1) + v_2*aY22*cos(θ_22+δ_2) + aY23*v_3*cos(θ_23+δ_3)=0
+	aY21*v_1*sin(θ_21+δ_1) + v_2*aY22*sin(θ_22+δ_2) + aY23*v_3*sin(θ_23+δ_3)=0
+end

@@ -1,0 +1,20 @@
+Header:
+end  //end of header
+//Show some plots
+Model [name="Iterations"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	//plot obtained angle per iteration in degrees
+	linePlot [xLabel="Iterations" yLabel="phi_3" name="Angle at node 3"]:
+		@x << totIter#
+		@y << atg2(v3)*180/pi [width=2 name="angle(v3)"]
+		@cond -> repeat# == 0
+	end
+	//plot voltages at node 2 and 3, per iteration.
+	linePlot [xLabel="iter#" yLabel="V2 & V3 [p.u] and PV reg on node 2 [bool]" name="Voltage per iter"]:
+		@x << totIter#
+		@y << abs(v2) [width=2 colorL=black colorD=cyan name="v2"]
+		@y << abs(v3) [width=2 colorL=darkRed colorD=red name="v3"]
+		@y << cGen2Reg [width=2 colorL=olive colorD=green name="PV reg on node 2"] //regulation indicator per iteration
+		@cond -> repeat# == 0
+	end
+end //end of visual model

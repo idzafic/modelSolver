@@ -1,0 +1,15 @@
+Header:
+end  //end of header
+//Show some plots
+Model:
+Plots:
+	//plot thet and omega
+	linePlot [xLabel="Time [s]" yLabel="u_c, i_L, u_L" name="RLCWithStep"]:
+		@x << t
+		@y << u_c [colorL=black colorD=red width=2 name="u_c"]
+		@y << i_L [colorL=darkGreen colorD=green width=2 name="i_L"]
+		@y << u_L [width=2 name="u_L"]
+		@cond -> repeat# == 0
+	end
+		
+end //end of visual model

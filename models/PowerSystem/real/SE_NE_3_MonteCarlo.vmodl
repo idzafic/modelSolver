@@ -1,0 +1,12 @@
+Header:
+end  //end of header
+//Show some plots
+Model [name="Iterations"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	linePlot [minY=0.8 maxY=1.1 xLabel="S3 [p.u]" yLabel="v_2,v_3" name="Voltages"]:
+		@x << repeat#
+		@y << v_2 [width=2 colorL=black colorD=cyan name="v2"]
+		@y << v_3 [width=2 colorL=darkRed colorD=red name="v3"]
+		@cond -> solState# == @solOk#
+	end
+end //end of visual model

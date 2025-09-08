@@ -1,0 +1,124 @@
+Header:
+	maxIter = 1000 	//Solution start time for time domain (ODE and DAE) problems
+	report = AllDetails 	//Solved and unsolved cases with iterations and debug information
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+end
+Model [type=NL domain=real eps=1e-6 name="PF in polar coordinates"]:
+Vars [out=true]:
+	ϕ_1 = ϕ_4; V_1 = V_4
+	ϕ_2 = ϕ_4; V_2 = V_4
+	ϕ_3 = ϕ_4; V_3 = V_4
+	ϕ_5 = ϕ_4; V_5 = V_4
+Params:
+	ϕ_4 = 0.0; 	V_4 = 1.0		//slack node
+	Y_1_1=223.59425522958563; θ_1_1=-1.4711176702738844 
+	Y_1_2=35.41057616405655; θ_1_2=1.6704649792860586 // line 1-2
+	Y_1_4=32.73148652006543; θ_1_4=1.6704649792860586 // line 1-4
+	Y_1_5=155.47456097031082; θ_1_5=1.6704649792860586 // line 1-5
+	Y_2_1=35.41057616405655; θ_2_1=1.6704649792860586 // line 2-1
+	Y_2_2=127.53089296124946; θ_2_2=-1.4711176717259415 
+	Y_2_3=92.13307316759158; θ_2_3=1.6704649792860586 // line 2-3
+	Y_3_2=92.13307316759158; θ_3_2=1.6704649792860586 // line 3-2
+	Y_3_3=125.62344155147142; θ_3_3=-1.4711176703430426 
+	Y_3_4=33.50293569730603; θ_3_4=1.6704649792860586 // line 3-4
+	Y_4_1=32.73148652006543; θ_4_1=1.6704649792860586 // line 4-1
+	Y_4_3=33.50293569730603; θ_4_3=1.6704649792860586 // line 4-3
+	Y_4_4=99.72737769665355; θ_4_4=-1.4711176667980241 
+	Y_4_5=33.50293569730603; θ_4_5=1.6704649792860586 // line 4-5
+	Y_5_1=155.47456097031082; θ_5_1=1.6704649792860586 // line 5-1
+	Y_5_4=33.50293569730603; θ_5_4=1.6704649792860586 // line 5-4
+	Y_5_5=188.95859097046065; θ_5_5=-1.4711176690922663 
+	P1_inj=2.1
+	Q1_inj		[out=true]
+	P2_inj=-3.0
+	Q2_inj=-0.9861
+	P3_inj=0.2349000000000001
+	Q3_inj	[out=true]
+	P4_inj=-4.0
+	Q4_inj=-1.3147
+	P5_inj=4.6651
+	Q5_inj		[out=true]
+	cGen1Reg=true
+	Q1_inj_min=-0.3
+	Q1_inj_max=0.3
+	V_1_sp=1.0
+	cGen3Reg=true
+	Q3_inj_min=-3.9
+	Q3_inj_max=3.9
+	V_3_sp=1.0
+	cGen5Reg=true
+	Q5_inj_min=-4.5
+	Q5_inj_max=4.5
+	V_5_sp=1.0
+NLEs:
+	// node 2 - PQ
+	V_2 * (Y_2_1 * V_1 * cos(ϕ_2 - θ_2_1 - ϕ_1) + Y_2_2 * V_2 * cos(ϕ_2 - θ_2_2 - ϕ_2) + Y_2_3 * V_3 * cos(ϕ_2 - θ_2_3 - ϕ_3)) - P2_inj = 0
+	V_2 * (Y_2_1 * V_1 * sin(ϕ_2 - θ_2_1 - ϕ_1) + Y_2_2 * V_2 * sin(ϕ_2 - θ_2_2 - ϕ_2) + Y_2_3 * V_3 * sin(ϕ_2 - θ_2_3 - ϕ_3)) - Q2_inj = 0
+	// node 1 - PV
+	V_1 * (Y_1_1 * V_1 * cos(ϕ_1 - θ_1_1 - ϕ_1) + Y_1_2 * V_2 * cos(ϕ_1 - θ_1_2 - ϕ_2) + Y_1_4 * V_4 * cos(ϕ_1 - θ_1_4 - ϕ_4) + Y_1_5 * V_5 * cos(ϕ_1 - θ_1_5 - ϕ_5)) - P1_inj = 0
+	if cGen1Reg:
+		V_1 - V_1_sp = 0
+	else:
+		V_1 * (Y_1_1 * V_1 * sin(ϕ_1 - θ_1_1 - ϕ_1) + Y_1_2 * V_2 * sin(ϕ_1 - θ_1_2 - ϕ_2) + Y_1_4 * V_4 * sin(ϕ_1 - θ_1_4 - ϕ_4) + Y_1_5 * V_5 * sin(ϕ_1 - θ_1_5 - ϕ_5)) - Q1_inj = 0
+	end
+	// node 3 - PV
+	V_3 * (Y_3_2 * V_2 * cos(ϕ_3 - θ_3_2 - ϕ_2) + Y_3_3 * V_3 * cos(ϕ_3 - θ_3_3 - ϕ_3) + Y_3_4 * V_4 * cos(ϕ_3 - θ_3_4 - ϕ_4)) - P3_inj = 0
+	if cGen3Reg:
+		V_3 - V_3_sp = 0
+	else:
+		V_3 * (Y_3_2 * V_2 * sin(ϕ_3 - θ_3_2 - ϕ_2) + Y_3_3 * V_3 * sin(ϕ_3 - θ_3_3 - ϕ_3) + Y_3_4 * V_4 * sin(ϕ_3 - θ_3_4 - ϕ_4)) - Q3_inj = 0
+	end
+	// node 5 - PV
+	V_5 * (Y_5_1 * V_1 * cos(ϕ_5 - θ_5_1 - ϕ_1) + Y_5_4 * V_4 * cos(ϕ_5 - θ_5_4 - ϕ_4) + Y_5_5 * V_5 * cos(ϕ_5 - θ_5_5 - ϕ_5)) - P5_inj = 0
+	if cGen5Reg:
+		V_5 - V_5_sp = 0
+	else:
+		V_5 * (Y_5_1 * V_1 * sin(ϕ_5 - θ_5_1 - ϕ_1) + Y_5_4 * V_4 * sin(ϕ_5 - θ_5_4 - ϕ_4) + Y_5_5 * V_5 * sin(ϕ_5 - θ_5_5 - ϕ_5)) - Q5_inj = 0
+	end
+IterPostP:
+	//calculate current reactive powers for each generator in each iteration
+	Q3_inj = V_3 * (Y_3_2 * V_2 * sin(ϕ_3 - θ_3_2 - ϕ_2) + Y_3_3 * V_3 * sin(ϕ_3 - θ_3_3 - ϕ_3) + Y_3_4 * V_4 * sin(ϕ_3 - θ_3_4 - ϕ_4))
+	Q1_inj = V_1 * (Y_1_1 * V_1 * sin(ϕ_1 - θ_1_1 - ϕ_1) + Y_1_2 * V_2 * sin(ϕ_1 - θ_1_2 - ϕ_2) + Y_1_4 * V_4 * sin(ϕ_1 - θ_1_4 - ϕ_4) + Y_1_5 * V_5 * sin(ϕ_1 - θ_1_5 - ϕ_5))
+	Q5_inj = V_5 * (Y_5_1 * V_1 * sin(ϕ_5 - θ_5_1 - ϕ_1) + Y_5_4 * V_4 * sin(ϕ_5 - θ_5_4 - ϕ_4) + Y_5_5 * V_5 * sin(ϕ_5 - θ_5_5 - ϕ_5))
+	
+Limits:
+	group [name="large_power" enabled=true]:
+		if cGen3Reg:
+			if Q3_inj<=Q3_inj_min [signal=TooLow]:
+				 cGen3Reg=false
+				 Q3_inj=Q3_inj_min
+			else:
+				if Q3_inj>=Q3_inj_max [signal=TooHigh]:
+					 cGen3Reg=false
+					 Q3_inj=Q3_inj_max
+				end
+			end
+		end
+	end
+	group [name="mega_power" enabled=true]:
+		if cGen1Reg:
+			if Q1_inj<=Q1_inj_min [signal=TooLow]:
+				 cGen1Reg=false
+				 Q1_inj=Q1_inj_min
+			else:
+				if Q1_inj>=Q1_inj_max [signal=TooHigh]:
+					 cGen1Reg=false
+					 Q1_inj=Q1_inj_max
+				end
+			end
+		end
+		if cGen5Reg:
+			if Q5_inj<=Q5_inj_min [signal=TooLow]:
+				 cGen5Reg=false
+				 Q5_inj=Q5_inj_min
+			else:
+				if Q5_inj>=Q5_inj_max [signal=TooHigh]:
+					 cGen5Reg=false
+					 Q5_inj=Q5_inj_max
+				end
+			end
+		end
+	end
+end

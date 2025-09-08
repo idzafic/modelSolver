@@ -1,0 +1,25 @@
+Header:
+	startTime = 0.0
+	dTime = 1e-6
+	endTime = 0.1
+	maxIter= 20
+	report = Solved
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=ODE domain=real name="Serial RLC With Step Gen"]:
+Vars [out=true]:
+	u_c=0
+	i_L=0
+Params:
+	t=0
+	R=1
+	L=0.01
+	C=1e-5
+	u_g=10 [out=true]
+	u_L=u_g [out=true]
+ODEs:
+	i_L' = (u_g-u_c-R*i_L)/L
+	u_c' = i_L/C
+PostProc:
+	u_L = u_g-u_c-R*i_L
+end

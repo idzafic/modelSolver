@@ -1,0 +1,16 @@
+Header:
+end
+//Show some plots
+Model [name="Pendulum"]:
+Plots [backColor=auto]: //backColor: auto - system back color, light - white backcolor, dark - black background color
+	//plot details
+	linePlot [minY=-0.05 maxY=1.1 xLabel="S3 [p.u]" yLabel="V2 & V3 [p.u] and PV reg on node 2 [bool]" name="S-V Curve"]:
+		@x << abs(S3_inj)
+		@y << abs(v2) [width=2 colorL=black colorD=cyan name="v2"]
+		@y << abs(v3) [width=2 colorL=darkRed colorD=red name="v3"]
+		@y << cGen2Reg [width=2 colorL=olive colorD=green name="PV reg on node 2"]
+		//@y << atg(v3) [width=2 colorL=black colorD=yellow name="v3 angle"]
+		@cond -> solState# == @solOk#
+	end
+
+end //end of visual model

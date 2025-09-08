@@ -1,0 +1,19 @@
+Header:
+end  //end of header
+//Show some plots
+Model:
+Plots:
+	linePlot [minY=-0.125 maxY=1.125 xLabel="Time [s]" yLabel="u,y,err" name="DorfE760_Disk"]:
+		vBand@ -> 0.01 [width=0.02 colorL=lightGray colorD=obsidianGray minY=0 maxY=1.05 name="Req. resp. region"]
+		hBand@ -> 1 [legend=false width=0.04 colorL=lightGray colorD=obsidianGray minX=0.02 maxX=1]
+		hLine@ -> 0.98 [colorL=brown colorD=yellow pattern=dot name="resp_min" minX=0.02 maxX=1] //horizontal line (min resp. limit)
+		hLine@ -> 1.02 [colorL=darkRed colorD=red pattern=dot name="resp_max" minX=0.02 maxX=1]	//horizontal line (max resp. limit)
+		vLine@ -> 0.02 [legend=false colorL=darkRed colorD=red pattern=dot minY=0 maxY=0.95]	//vertical line (max t resp.)
+		@x << t
+		@y << err [colorL=black colorD=red width=2 name="err"]
+		@y << u [colorL=darkGreen colorD=green width=2 name="u"]
+		@y << y [colorL=brown colorD=yellow width=2 name="y"]
+		@cond -> repeat# == 0
+	end
+		
+end //end of visual model

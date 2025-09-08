@@ -1,0 +1,83 @@
+Header:
+	maxIter = 50 	//Solution start time for time domain (ODE and DAE) problems
+	report = AllDetails 	//Solved and unsolved cases with iterations and debug information
+	maxReps = -1 	//Used to limit repetitions (-1: no limit)
+	outToTxt = false 	//true: create output txt file for results, fale: output file was not created
+	txtFile = "" 	//only valid if outToTxt was set to true
+end
+//Model created by xml -> modl converter
+Model [type=NL name="PF"]:
+Vars [out=true]:
+	phi_2=0		// Variable name and its initial value (optional)
+	v_2=1
+	phi_3=0
+	v_3=1
+Params:
+	v_1=1 [out=true]
+	phi_1=0		// Parameter name and its value
+	aY=32.8797974610715
+	aY11=aY
+	aY21=aY
+	aY22=65.7595949221429
+	aY23=aY
+	aY32=aY
+	aY33=aY
+	thetaDiag=-1.40564764938027 
+	thetaOffDiag=1.73594500420952 
+	theta11=thetaDiag
+	theta21=thetaOffDiag
+	theta22=thetaDiag
+	theta23=thetaOffDiag
+	theta32=thetaOffDiag [out=true]
+	theta33=thetaDiag
+	cIBR2Reg=true [type=bool out=true]	// initially generator on node 2 is in regulation mode 
+	P2_inj=0.1		//IBR P
+	Q2_inj=0 [out=true]		//IBR Q
+	V2_sp=1.01
+	P3_inj=-1.2
+	Q3_inj=-0.45
+	S_ibr_rating = 1.5
+	V_dead_max = 1.02; V_dead_min = 0.98
+	V_reg_max = 1.08; V_reg_min = 0.92
+	k1 = -0.44*S_ibr_rating/(V_dead_min-V_reg_min)  [out=true]
+	k2 = -0.44*S_ibr_rating/(V_reg_max-V_dead_max)  [out=true]
+	IBR_pos = 0 [type=int out=true]
+NLEs:
+	// node 2 (IBR node)
+	v_2^2*aY22*cos(theta22) + v_2*(aY21*v_1*cos(phi_2-theta21-phi_1) + aY23*v_3*cos(phi_2-theta23-phi_3))=P2_inj
+	-v_2^2*aY22*sin(theta22) + v_2*(aY21*v_1*sin(phi_2-theta21-phi_1) + aY23*v_3*sin(phi_2-theta23-phi_3))=Q2_inj
+	// node 3 - PQ load
+	v_3^2*aY33*cos(theta33) + v_3*(aY32*v_2*cos(phi_3-theta32-phi_2)) = P3_inj
+	-v_3^2*aY33*sin(theta33) + v_3*(aY32*v_2*sin(phi_3-theta32-phi_2)) = Q3_inj
+Limits:
+	group [name="IBR2" enabled=true]:
+		// Default regulation curve for IBR at node 2
+		if cIBR2Reg:
+			if v_2 < V_reg_min [signal=TooLow]:
+				Q2_inj=0.44*S_ibr_rating // set IBR's Q to maximum reactive power
+				cIBR2Reg=false		 
+				IBR_pos = 2
+			else:
+				if v_2 < V_dead_min [signal = MedLow]:
+					cIBR2Reg=false		
+					Q2_inj=0.44*S_ibr_rating+k1*(v_2-V_reg_min) // set IBR's Q to the left line slope of reactive power reg. curve
+					IBR_pos = -1
+				else:
+					if v_2 > V_reg_max [signal = TooHigh]:
+						cIBR2Reg=false
+						Q2_inj=-0.44*S_ibr_rating // sset IBR's Q to minimum reactive power
+						IBR_pos = 1
+					else:
+						if v_2 > V_dead_max [signal = MedHigh]:
+							cIBR2Reg=false
+							Q2_inj=k2*(v_2-V_dead_max)	// set IBR's Q to left the right line slope of reactive power reg. curve
+							IBR_pos = 2
+						else:
+							Q2_inj=0			//deadband, no need to change reactive power of IBR
+						end
+					end
+				end
+			end
+		end
+	end
+end

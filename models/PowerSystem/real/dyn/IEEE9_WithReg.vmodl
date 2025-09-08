@@ -1,0 +1,42 @@
+Header:
+	newTab = false 	//true:Create new tab whenever figure changes, false: update figure in the existing tab
+end
+Model [name="Visualization of results"]:
+Plots:
+	// --- Plot 1: Uporedna dinamika snaga G2 i G3 ---
+	// U klasičnom modelu, mehanička snaga (P_m) je konstantna,
+	// što će se jasno vidjeti u poređenju sa oscilujućom električnom snagom (Pe).
+	linePlot [xLabel="Time [s]" yLabel="Power [p.u.]" name="Power Dynamics (G2 vs G3)"]:
+		@x << t
+		@y << P_gm_g1 [width=2 name="Mech. Power G1"]
+		@y << Pe_g1   [width=2 pattern="dash" name="Elec. Power G1"]
+		@y << P_gm_g2 [colorL=darkGreen colorD=lightGreen width=2 name="Mech. Power G2"]
+		@y << Pe_g2 [colorL=orange colorD=yellow width=2 pattern="dash" name="Elec. Power G2"]
+		@y << P_gm_g3 [colorL=blue colorD=cyan  width=2 pattern="dot" name="Mech. Power G3"]
+		@y << Pe_g3 [colorL=red colorD=orange  width=2 pattern="dashdot" name="Elec. Power G3"]
+	end
+		
+	// --- Plot 2: Uporedna dinamika brzina G2 i G3 ---
+	linePlot [xLabel="Time [s]" yLabel="Speed [p.u.]" name="Rotor Speeds"]:
+		@x << t
+		@y << ω_g1 [colorL=green width=2 name="Speed ω_g1"]
+		@y << ω_g2 [colorL=blue colorD=cyan width=2 name="Speed ω_g2"]
+		@y << ω_g3 [colorL=red colorD=yellow width=2 pattern="dash" name="Speed ω_g3"]
+	end
+			
+	// --- Plot 3: Rotor Angles G2 i G3 ---
+	linePlot [xLabel="Time [s]" yLabel="Angle [deg]" name="Rotor Angles"]:
+		@x << t
+		@y << δ_g1 * 180/pi [colorL=green width=2 name="Angle δ_g1 [deg]"]
+		@y << δ_g2 * 180/pi [colorL=blue colorD=cyan width=2 name="Angle δ_g2 [deg]"]
+		@y << δ_g3 * 180/pi [colorL=red colorD=yellow width=2 pattern="dash" name="Angle δ_g3 [deg["]
+	end
+			
+	// --- Plot 4: Voltages---
+	linePlot [xLabel="Time [s]" yLabel="Voltage [p.u.]" name="Generator Terminal Voltages"]:
+		@x << t
+		@y << V_t_g1 [colorL=green colorD=green width=2 name="Terminal Voltage V_t_g1"]
+		@y << V_t_g2 [colorL=blue colorD=cyan width=2 name="Terminal Voltage V_t_g2"]
+		@y << V_t_g3 [colorL=red colorD=yellow width=2 name="Terminal Voltage V_t_g3"]
+	end
+end

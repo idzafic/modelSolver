@@ -1,0 +1,16 @@
+Header:
+	maxIter=200
+	maxReps=1000
+	report=AllWithDetails //Solved - only final solved solution, All - shows solved and nonSolved with iterations, AllWithDetails - All + debug information 
+end  //end of header
+//Model created by xml -> modl converter
+Model [type=NL domain=cmplx name="CmplxDemo"]:
+Vars [conj=false out=true]:
+	x=e+1i*e		// Variable name and initial value (optional) (e-Euler number)
+	y=0		// Variable name and initial value (optional) 
+Params:
+	z=2+5i
+NLEs:
+	x+y-1+2i=z		// First nonlinear equaiton of the model 
+	x*y=4i		// Second nonlinear equaiton of the model
+end
