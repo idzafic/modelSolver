@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<powerFlow>
+		<!-- Toggle individual code generation options -->
+		<options>
+			<converter_type>complex</converter_type>         <!-- Converter type: choose from 'polar', 'rectangular', or 'complex' -->
+			<include_limits>false</include_limits>          <!-- Include generator reactive power limits -->
+			<comment_equations>true</comment_equations>    <!-- Add comments to generated equations -->
+			<comment_params>true</comment_params>          <!-- Add comments for parameters -->
+			<zero_loads>false</zero_loads>                 <!-- Set all load values to zero -->
+			<zip_coeff>false</zip_coeff>                   <!-- Enable ZIP load modeling -->
+			<zip_Kpone>false</zip_Kpone>                   <!-- Use constant ZIP coefficients across all categories: Kz = 0, Ki = 0, Kp = 1 -->
+			<convertLoadsToImpedance>false</convertLoadsToImpedance>    <!-- All loads will be converted to constant impedance. Loads will be threted as shunts -->
+			<useSumOfCurrentsForZI>true</useSumOfCurrentsForZI>     <!-- Sum of currents instead of sum of powers will be generated for ZI nodes -->
+			<calcQOfPVGensInEachIteration>true</calcQOfPVGensInEachIteration>     <!-- Calculate Qf in every iteration -->
+		</options>
+
+		<!-- Definition of variable names and formatting styles -->
+		<!-- Note: Only variable names defined in greek_symbols.json can be used with format="symbol"; format="name" allows any name -->
+		<variables>
+			<voltage_magnitude name="V" format="name" />                  <!-- Voltage magnitude variable (e.g., V_1, V_2, ...) -->
+			<voltage_angle name="delta" format="symbol" />                <!-- Voltage angle variable (e.g., δ_1, δ_2, ...) -->
+			<line_admittance_magnitude name="Y" format="name" />          <!-- Line admittance magnitude (e.g., Y_1_2) -->
+			<line_admittance_angle name="theta" format="symbol" />        <!-- Line admittance angle (e.g., Ψ_1_2) -->
+
+			<real_voltage_component name="e" format="name" />             <!-- Real part of node voltage (e.g., e_1, e_2, ...) -->
+			<imaginary_voltage_component name="f" format="name" />        <!-- Imaginary part of node voltage (e.g., f_1, f_2, ...) -->
+			<conductance name="G" format="name" />                        <!-- Real part of line admittance (e.g., G_1_2) -->
+			<susceptance name="B" format="name" />                        <!-- Imaginary part of line admittance (e.g., B_1_2) -->
+
+			<complex_voltage name="v" format="name" />                    <!-- Complex voltage variable (e.g., v_1, v_2, ...) -->
+			<complex_admittance name="y" format="name" />                 <!-- Complex admittance variable (e.g., y_1_2) -->
+		</variables>
+
+
+		<!-- Power categories for generator classification -->
+		<!-- Any number of categories can be defined, as long as their 'max' values are in strictly ascending order -->
+		<!-- Recommendation: Set the last category's max="inf" to ensure all generators are assigned to a group -->
+		<limits>
+			<category name="cute_power" max="50"/>           
+			<category name="medium_power" max="100"/>          
+			<category name="large_power" max="150"/>           
+			<category name="strong_power" max="200"/>          
+			<category name="mega_power" max="inf"/>            
+		</limits>
+
+		<!-- ZIP load model category definitions with coefficients -->
+		<!-- Any number of categories can be defined, as long as their 'max' values are in strictly ascending order and Kz + Ki + Kp = 1.0 -->
+		<!-- Recommendation: Set the last category's max="inf" to ensure that all loads are included within a defined category -->
+		<zip_limits>
+			<category name="ultra_power" max="inf" Kz="1." Ki="0." Kp="0."/>      
+		</zip_limits>
+	</powerFlow>
+	<stateEstimation>
+		<options>
+			<methodOfEstimation>EC</methodOfEstimation>         <!-- Method: choose from 'EC' - equality constrain, 'NE' -->
+			<voltageMeasurements>1.</voltageMeasurements>		<!-- Number of nodes measured by voltage (from 0 to 1) -->
+			<injectionMeasurements>1.</injectionMeasurements>		<!-- Number of (non-zero) injection points measured (from 0 to 1) -->
+			<branchMeasurements>0.</branchMeasurements>		<!-- Number of branches measured (from 0 to 1) -->
+		</options>
+		
+		<!-- Weight factor values for all three types of measurements + ZI -->
+		<weightFactors>
+			<injectionWeight>10</injectionWeight>        
+			<branchWeight>1.1</branchWeight>  
+			<voltageWeight>1</voltageWeight>  
+			<zeroInjectionWeight>100</zeroInjectionWeight>   <!-- Used only if method 'NE' -->
+		</weightFactors>
+		
+		<!-- Deviation values for all three types of measurements -->
+		<deviations>
+			<injectionDeviation>0.02</injectionDeviation>         
+			<branchDeviation>0.03</branchDeviation>  
+			<voltageDeviation>0.04</voltageDeviation>  
+		</deviations>
+	
+	</stateEstimation>
+	<common>
+		<includeConsumptionCurves>false</includeConsumptionCurves> <!-- Enable consumption curves -->
+		<numberOfLoadConsumptionCurves>2</numberOfLoadConsumptionCurves> <!-- Number of consumption curves defined daily; must be less that the number of loads -->
+		<numberOfGenConsumptionCurves>1</numberOfGenConsumptionCurves> <!-- Number of consumption curves defined daily; must be less that the number of generators -->
+	</common>
+</config>

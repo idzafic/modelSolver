@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<loadTransferData>
+    <settings delta_k="0.05" k="1" delta_gen="0.02" k_gen="1" />
+    
+    <buses>
+        <bus id="2" />  <!-- k -->
+        <bus id="29" />  <!-- k_gen -->
+        <bus id="30" />
+    </buses>
+</loadTransferData>
